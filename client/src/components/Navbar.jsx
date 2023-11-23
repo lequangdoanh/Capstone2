@@ -7,6 +7,10 @@ import PersonIcon from '@mui/icons-material/Person';
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { openSignin } from '../redux/setSigninSlice';
+import { BsFillBellFill } from "react-icons/bs";
+import { MdDarkMode } from "react-icons/md"
+import { MdOutlineDarkMode } from "react-icons/md"
+
 
 const NavbarDiv = styled.div`
   display: flex;
@@ -26,6 +30,26 @@ backdrop-filter: blur(5.7px);
     padding: 16px;
   }
 
+`;
+
+const Elements = styled.div`
+  padding: 4px 16px;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text_secondary};
+  width: 100%;
+  &:hover {
+    background-color: ${({ theme }) => theme.text_secondary + 50};
+  }
+`;
+const NavText = styled.div`
+  padding: 8px 0px;
+  font-size: 15px;
 `;
 const ButtonDiv = styled.div`
   font-size: 14px;
@@ -61,35 +85,42 @@ const IcoButton = styled(IconButton)`
 `;
 
 
-const Navbar = ({  menuOpen, setMenuOpen, setSignInOpen, setSignUpOpen }) => {
+const Navbar = ({  menuOpen, setMenuOpen, darkMode, setDarkMode,setSignInOpen, setSignUpOpen }) => {
 
   const { currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   return (
-    <NavbarDiv>
+    <>
+    {!currentUser?.isAdmin && (
+      <> 
+        <NavbarDiv>
       <IcoButton onClick={() => setMenuOpen(!menuOpen)}>
         <MenuIcon />
       </IcoButton>
       {currentUser ?
         <Welcome>
-          Welcome, {currentUser.name}
+          Welcome, {currentUser?.name}
         </Welcome>
         :
         <>&nbsp;</>}
+      
+      
       {
-        currentUser ? <>
+        currentUser ? 
+        <>
           <Link to='/profile' style={{ textDecoration: 'none' }}>
-            <Avatar src={currentUser.img} >{currentUser.name.charAt(0).toUpperCase()}</Avatar>
+            <Avatar src={currentUser?.img} >{currentUser?.name.charAt(0).toUpperCase()}</Avatar>
           </Link>
         </>
           :
-          <ButtonDiv onClick={() => dispatch(openSignin())}>
-            <PersonIcon style={{ fontSize: "18px" }} />
-            Login
-          </ButtonDiv>
+          <Avatar style={{ fontSize: "10px" }} onClick={() => dispatch(openSignin())}></Avatar>
       }
     </NavbarDiv>
+      </>
+    )}
+    </>
+    
   )
 }
 
