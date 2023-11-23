@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { openSignin } from '../redux/setSigninSlice';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import {AiFillEye } from "react-icons/ai";
 
 
 const PlayIcon = styled.div`
@@ -205,18 +206,18 @@ export const PodcastCard = ({ podcast, user, setSignInOpen }) => {
         </Top>
         <CardInformation>
           <MainInfo>
-            <Title>{podcast.name}</Title>
+            <Title>{podcast.name.slice(0,21)}</Title>
             <Description>{podcast.desc}</Description>
             <CreatorInfo>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Avatar
-                  src={podcast.creator.img} style={{ width: '26px', height: '26px' }}>{podcast.creator.name?.charAt(0).toUpperCase()}</Avatar>
+                  src={podcast?.creator?.img} style={{ width: '26px', height: '26px' }}>{podcast?.creator?.name?.charAt(0).toUpperCase()}</Avatar>
                 <CreatorName>
-                  {podcast.creator.name}
+                  {podcast?.creator?.name}
                 </CreatorName>
 
               </div>
-              <Views>• {podcast.views} Views</Views>
+              <Views><AiFillEye/> {podcast.views} Views</Views>
             </CreatorInfo>
           </MainInfo>
         </CardInformation>
