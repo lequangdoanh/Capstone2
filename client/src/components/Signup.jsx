@@ -21,7 +21,7 @@ import {
   import { googleSignIn, signUp } from "../api/index";
   import OTP from "./OTP";
   import { useGoogleLogin } from "@react-oauth/google";
-import { closeSignin, openSignin } from "../redux/setSigninSlice";
+  import { closeSignin, openSignin } from "../redux/setSigninSlice";
   
   
   const Container = styled.div`
