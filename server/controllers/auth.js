@@ -4,24 +4,23 @@ import bcrypt from "bcrypt";
 import { createError } from "../error.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import dotenv from 'dotenv';
-import otpGenerator from 'otp-generator';
-
+import dotenv from "dotenv";
+import otpGenerator from "otp-generator";
 
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD
+        user: 'trainmodel0503@gmail.com',
+        pass: 'gbweaxmipkkxuwvq',
     },
     port: 465,
-    host: 'smtp.gmail.com'
+    host: "smtp.gmail.com",
 });
 
 export const signup = async (req, res, next) => {
-    const { email } = req.body
+    const { email } = req.body;
     // Check we have an email
     if (!email) {
         return res.status(422).send({ message: "Missing email." });
@@ -31,7 +30,7 @@ export const signup = async (req, res, next) => {
         const existingUser = await User.findOne({ email }).exec();
         if (existingUser) {
             return res.status(409).send({
-                message: "Email is already in use."
+                message: "Email is already in use.",
             });
         }
         // Step 1 - Create and save the userconst salt = bcrypt.genSaltSync(10);
@@ -39,18 +38,22 @@ export const signup = async (req, res, next) => {
         const hashedPassword = bcrypt.hashSync(req.body.password, salt);
         const newUser = new User({ ...req.body, password: hashedPassword });
 
-        newUser.save().then((user) => {
-
-            // create jwt token
-            const token = jwt.sign({ id: user._id }, process.env.JWT, { expiresIn: "9999 years" });
-            res.status(200).json({ token, user });
-        }).catch((err) => {
-            next(err);
-        });
+        newUser
+            .save()
+            .then((user) => {
+                // create jwt token
+                const token = jwt.sign({ id: user._id }, process.env.JWT, {
+                    expiresIn: "9999 years",
+                });
+                res.status(200).json({ token, user });
+            })
+            .catch((err) => {
+                next(err);
+            });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const signin = async (req, res, next) => {
     try {
@@ -59,60 +62,83 @@ export const signin = async (req, res, next) => {
             return next(createError(201, "User not found"));
         }
         if (user.googleSignIn) {
-            return next(createError(201, "Entered email is Signed Up with google account. Please SignIn with google."));
+            return next(
+                createError(
+                    201,
+                    "Entered email is Signed Up with google account. Please SignIn with google."
+                )
+            );
         }
-        const validPassword = await bcrypt.compareSync(req.body.password, user.password);
+        const validPassword = await bcrypt.compareSync(
+            req.body.password,
+            user.password
+        );
+
         if (!validPassword) {
             return next(createError(201, "Wrong password"));
         }
 
         // create jwt token
-        const token = jwt.sign({ id: user._id }, process.env.JWT, { expiresIn: "9999 years" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT, {
+            expiresIn: "9999 years",
+        });
         res.status(200).json({ token, user });
-
     } catch (err) {
         next(err);
     }
-}
-
-
+};
 
 export const googleAuthSignIn = async (req, res, next) => {
     try {
+        console.log(req.body);
         const user = await User.findOne({ email: req.body.email });
 
         if (!user) {
             try {
                 const user = new User({ ...req.body, googleSignIn: true });
                 await user.save();
-                const token = jwt.sign({ id: user._id }, process.env.JWT, { expiresIn: "9999 years" });
+                const token = jwt.sign({ id: user._id }, process.env.JWT, {
+                    expiresIn: "9999 years",
+                });
                 res.status(200).json({ token, user: user });
             } catch (err) {
                 next(err);
             }
         } else if (user.googleSignIn) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT, { expiresIn: "9999 years" });
+            const token = jwt.sign({ id: user._id }, process.env.JWT, {
+                expiresIn: "9999 years",
+            });
             res.status(200).json({ token, user });
         } else if (user.googleSignIn === false) {
-            return next(createError(201, "User already exists with this email can't do google auth"));
+            return next(
+                createError(
+                    201,
+                    "User already exists with this email can't do google auth"
+                )
+            );
         }
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const logout = (req, res) => {
     res.clearCookie("access_token").json({ message: "Logged out" });
-}
+};
 
-export const generateOTP = async (req, res) => {
-    req.app.locals.OTP = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false, digits: true, });
+export const generateOTP = async (req, res, next) => {
+    req.app.locals.OTP = await otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        specialChars: false,
+        lowerCaseAlphabets: false,
+        digits: true,
+    });
     const { email } = req.query;
     const { name } = req.query;
     const { reason } = req.query;
     const verifyOtp = {
         to: email,
-        subject: 'Account Verification OTP',
+        subject: "Account Verification OTP",
         html: `
         <div style="font-family: Poppins, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
     <h1 style="font-size: 22px; font-weight: 500; color: #854CE6; text-align: center; margin-bottom: 30px;">Verify Your PODSTREAM Account</h1>
@@ -132,12 +158,12 @@ export const generateOTP = async (req, res) => {
     <br>
     <p style="font-size: 16px; color: #666; margin-bottom: 20px; text-align: center;">Best regards,<br>The Podstream Team</p>
 </div>
-        `
+        `,
     };
 
     const resetPasswordOtp = {
         to: email,
-        subject: 'PODSTREAM Reset Password Verification',
+        subject: "PODSTREAM Reset Password Verification",
         html: `
             <div style="font-family: Poppins, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
                 <h1 style="font-size: 22px; font-weight: 500; color: #854CE6; text-align: center; margin-bottom: 30px;">Reset Your PODSTREAM Account Password</h1>
@@ -157,26 +183,26 @@ export const generateOTP = async (req, res) => {
                 <br>
                 <p style="font-size: 16px; color: #666; margin-bottom: 20px; text-align: center;">Best regards,<br>The PODSTREAM Team</p>
             </div>
-        `
+        `,
     };
     if (reason === "FORGOTPASSWORD") {
         transporter.sendMail(resetPasswordOtp, (err) => {
             if (err) {
-                next(err)
+                next(err);
             } else {
                 return res.status(200).send({ message: "OTP sent" });
             }
-        })
+        });
     } else {
         transporter.sendMail(verifyOtp, (err) => {
             if (err) {
-                next(err)
+                next(err);
             } else {
                 return res.status(200).send({ message: "OTP sent" });
             }
-        })
+        });
     }
-}
+};
 
 export const verifyOTP = async (req, res, next) => {
     const { code } = req.query;
@@ -186,7 +212,7 @@ export const verifyOTP = async (req, res, next) => {
         res.status(200).send({ message: "OTP verified" });
     }
     return next(createError(201, "Wrong OTP"));
-}
+};
 
 export const createResetSession = async (req, res, next) => {
     if (req.app.locals.resetSession) {
@@ -195,7 +221,7 @@ export const createResetSession = async (req, res, next) => {
     }
 
     return res.status(400).send({ message: "Session expired" });
-}
+};
 
 export const findUserByEmail = async (req, res, next) => {
     const { email } = req.query;
@@ -203,46 +229,48 @@ export const findUserByEmail = async (req, res, next) => {
         const user = await User.findOne({ email: email });
         if (user) {
             return res.status(200).send({
-                message: "User found"
+                message: "User found",
             });
         } else {
             return res.status(202).send({
-                message: "User not found"
+                message: "User not found",
             });
         }
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const resetPassword = async (req, res, next) => {
-
-    if (!req.app.locals.resetSession) return res.status(440).send({ message: "Session expired" });
+    if (!req.app.locals.resetSession)
+        return res.status(440).send({ message: "Session expired" });
 
     const { email, password } = req.body;
     try {
-        await User.findOne({ email }).then(user => {
+        await User.findOne({ email }).then((user) => {
             if (user) {
-
                 const salt = bcrypt.genSaltSync(10);
                 const hashedPassword = bcrypt.hashSync(password, salt);
-                User.updateOne({ email: email }, { $set: { password: hashedPassword } }).then(() => {
-
-                    req.app.locals.resetSession = false;
-                    return res.status(200).send({
-                        message: "Password reset successful"
+                User.updateOne(
+                    { email: email },
+                    { $set: { password: hashedPassword } }
+                )
+                    .then(() => {
+                        req.app.locals.resetSession = false;
+                        return res.status(200).send({
+                            message: "Password reset successful",
+                        });
+                    })
+                    .catch((err) => {
+                        next(err);
                     });
-
-                }).catch(err => {
-                    next(err);
-                });
             } else {
                 return res.status(202).send({
-                    message: "User not found"
+                    message: "User not found",
                 });
             }
         });
     } catch (err) {
         next(err);
     }
-}
+};
