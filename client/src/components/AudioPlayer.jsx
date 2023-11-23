@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { closePlayer, openPlayer, setCurrentTime } from '../redux/audioplayerSlice'
 import { openSnackbar } from '../redux/snackbarSlice'
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
     display: flex;
@@ -164,6 +165,8 @@ const VolumeBar = styled.input.attrs({
 const AudioPlayer = ({ episode, podid, currenttime, index }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [progressWidth, setProgressWidth] = useState(0);
+    const { currentUser } = useSelector((state) => state.user);
+    
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
     const audioRef = useRef(null);
@@ -172,6 +175,7 @@ const AudioPlayer = ({ episode, podid, currenttime, index }) => {
     const handleTimeUpdate = () => {
         const duration = audioRef.current.duration;
         const currentTime = audioRef.current.currentTime;
+        
         const progress = (currentTime / duration) * 100;
         setProgressWidth(progress);
         setDuration(duration);
@@ -241,8 +245,11 @@ const AudioPlayer = ({ episode, podid, currenttime, index }) => {
     }
 
     return (
-        <Container>
-            <Left>
+        <>
+            {!currentUser?.isAdmin && (
+                <>
+                <Container>
+                <Left>
                 <Image src={podid?.thumbnail} />
                 <PodData>
                     <Title>{episode?.name}</Title>
@@ -273,7 +280,10 @@ const AudioPlayer = ({ episode, podid, currenttime, index }) => {
                 <VolumeUp />
                 <VolumeBar value={volume} onChange={handleVolumeChange} />
             </Sound>
-        </Container>
+            </Container>
+            </>
+            )}
+        </>
     )
 }
 
