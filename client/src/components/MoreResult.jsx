@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import {format} from 'timeago.js';
+import { AiFillEye } from "react-icons/ai";
+import {AiFillClockCircle } from "react-icons/ai";
 
 const Results = styled(Link)`
 background-color: ${({ theme }) => theme.bgLight};
@@ -21,7 +23,7 @@ gap: 20px;
 const PodcastImage = styled.img`
 height: 80px;
 border-radius: 8px;
-width: 150px;
+width: 120px;
 object-fit: cover;
 @media (max-width: 768px) {
   height: 60px;
@@ -49,6 +51,7 @@ font-size: 12px;
 const Time = styled.div`
 color: ${({ theme }) => theme.text_secondary};
 font-size: 12px;
+width: 70px;
 @media (max-width: 768px) {
   font-size: 10px;
 }
@@ -61,16 +64,16 @@ gap: 8px;
 const MoreResult = ({ podcast }) => {
   return (
     <Results to={`/podcast/${podcast?._id}`} style={{ textDecoration: "none" }}>
-      <PodcastImage src={podcast?.thumbnail} />
+      <PodcastImage src={podcast?.thumbnail}/>
       <PodcastInfo>
         <PodcastName>{podcast?.name}</PodcastName>
         <Desciption>
-          <Creator style={{marginRight: '12px'}}>{podcast?.creator.name}</Creator>
+          <Creator style={{width: "110px"}}>{podcast?.creator?.name}</Creator>
           <Time>
-            • {podcast?.views} Views
+            <AiFillEye/> {podcast?.views} Views
           </Time>
-          <Time>
-            • {format(podcast?.createdAt)}
+          <Time style={{width: "110px"}}>
+            <AiFillClockCircle/> {format(podcast?.createdAt)}
           </Time>
         </Desciption>
       </PodcastInfo>
