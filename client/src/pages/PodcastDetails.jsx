@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import { CircularProgress, IconButton } from '@mui/material';
-import { favoritePodcast, getPodcastById, getUsers } from '../api';
-import { useParams } from 'react-router-dom';
+import { favoritePodcast, getPodcastById, getUsers, deletePostCard } from '../api';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Episodecard from '../components/Episodecard';
 import { openSnackbar } from '../redux/snackbarSlice';
@@ -154,6 +155,7 @@ const PodcastDetails = () => {
   const [podcast, setPodcast] = useState();
   const [user, setUser] = useState();
   const [loading, setLoading] = useState();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -227,6 +229,28 @@ const PodcastDetails = () => {
     })
   }
 
+  const deletePostcard = async(idPostcard) => {
+      await deletePostCard(idPostcard).then((res) => {
+        if (res.status === 200) {
+          openSnackbar(
+            {
+              message: 'Delete Success',
+              severity: "success"
+            }
+          );
+          navigate('/',{replace: true})
+        }
+      }).catch((err) => {
+        dispatch(
+          openSnackbar(
+            {
+              message: 'Delete Error',
+              severity: "error"
+            }
+          )
+        )
+       })
+  }
 
   useState(() => {
     getPodcast();
@@ -258,6 +282,16 @@ const PodcastDetails = () => {
                 <FavoriteIcon style={{ width: '16px', height: '16px' }}></FavoriteIcon>
               }
             </Favorite>
+            {
+              currentUser?._id ==  podcast?.creator?._id && (
+                <Favorite style={{ marginLeft: '16px' }} onClick={() => deletePostcard(podcast._id)}>
+            <DeleteIcon style={{ width: '16px', height: '16px' }}></DeleteIcon>
+            </Favorite>
+              )
+            }
+            <Favorite style={{ marginLeft: '16px' }} onClick={() => deletePostcard(podcast._id)}>
+            <DeleteIcon style={{ width: '16px', height: '16px' }}></DeleteIcon>
+            </Favorite>
           </div>
           <Top>
             <Image src={podcast?.thumbnail} />
@@ -266,7 +300,7 @@ const PodcastDetails = () => {
               </Title>
               <Description>{podcast?.desc}</Description>
               <Tags>
-                {podcast?.tags.map((tag) => (
+                {podcast?.tags?.map((tag) => (
                   <Tag>{tag}</Tag>
                 ))}
               </Tags>
@@ -292,7 +326,7 @@ const PodcastDetails = () => {
           <Episodes>
             <Topic>All Episodes</Topic>
             <EpisodeWrapper>
-              {podcast?.episodes.map((episode, index) => (
+              {podcast?.episodes?.map((episode, index) => (
                 <Episodecard episode={episode} podid={podcast} type={podcast.type} user={user} index={index} />
               ))}
             </EpisodeWrapper>

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { DefaultCard } from '../components/DefaultCard.jsx';
-import { Category } from '../utils/Data.js';
+import { TypeBlog } from '../components/TypeBlog.jsx';
+import { CategoryBlog } from '../utils/Data.js';
 import { searchPodcast } from '../api/index.js';
-import { PodcastCard } from '../components/PodcastCard.jsx';
 import TopResult from '../components/TopResult.jsx';
 import MoreResult from '../components/MoreResult.jsx';
 import { Link } from 'react-router-dom';
@@ -26,32 +25,6 @@ gap: 20px;
 }
 
 `;
-
-const DashboardMain = styled.div`
-padding: 20px 30px;
-padding-bottom: 200px;
-height: 100%;
-overflow-y: scroll;
-display: flex;
-flex-direction: column;
-gap: 20px;
-@media (max-width: 768px){
-  padding: 6px 10px;
-}
-`;
-const FilterContainer = styled.div`
-display: flex;
-flex-direction: column;
-${({ box, theme }) => box && `
-background-color: ${theme.bg};
-  border-radius: 10px;
-  padding: 20px 30px;
-`}
-background-color: ${({ theme }) => theme.bg};
-  border-radius: 10px;
-  padding: 20px 30px;
-`;
-
 const Heading = styled.div`
     align-items: flex-start;
     color: ${({ theme }) => theme.text_primary};
@@ -123,7 +96,7 @@ width: 100%;
 color: ${({ theme }) => theme.text_primary};
 `
 
-const Search = () => {
+const Blogs = () => {
 
     const [searched, setSearched] = useState("");
     const [searchedPodcasts, setSearchedPodcasts] = useState([]);
@@ -150,13 +123,11 @@ const Search = () => {
     }
 
     return (
-        <DashboardMain>
-            <FilterContainer>
         <SearchMain>
             <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
             <Search_whole>
                 <SearchOutlinedIcon sx={{ "color": "inherit" }} />
-                <input type='text' placeholder='Search Artist/Podcast'
+                <input type='text' placeholder='Search Blogs'
                     style={{ "border": "none", "outline": "none", "width": "100%", "background": "inherit", "color": "inherit" }}
                     value={searched}
                     onChange={(e) => handleChange(e)} />
@@ -165,11 +136,11 @@ const Search = () => {
             </div>
             {searched === "" ?
                 <Categories>
-                    <Heading>Browse All</Heading>
+                    <Heading>Blogs All</Heading>
                     <BrowseAll>
-                        {Category.map((category) => (
-                            <Link to={`/showpodcasts/${category.name.toLowerCase()}`} style={{ textDecoration: "none" }}>
-                                <DefaultCard category={category} />
+                        {CategoryBlog.map((category) => (
+                            <Link to={`/blog/${category.name.toLowerCase()}`} style={{ textDecoration: "none" }}>
+                                <TypeBlog category={category} />
                             </Link>
                         ))}
                     </BrowseAll>
@@ -199,9 +170,7 @@ const Search = () => {
                 </>
             }
         </SearchMain>
-        </FilterContainer>
-        </DashboardMain>
     )
 }
 
-export default Search
+export default Blogs
