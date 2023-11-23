@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import styled from "styled-components";
 import Avatar from '@mui/material/Avatar';
 import { getUsers } from '../api/index';
-import { PodcastCard } from '../components/PodcastCard.jsx'
+import { PodcastCard } from '../components/PodcastCard.jsx';
+import { BlogCard } from '../components/BlogCard.jsx';
 
 const ProfileAvatar = styled.div`
   padding-left:3rem;
@@ -160,6 +161,7 @@ const Profile = () => {
                 </FilterContainer>
 
             }
+
             {currentUser && user?.podcasts.length === 0 &&
                 <FilterContainer box={true} >
                     <Topic>Your Uploads

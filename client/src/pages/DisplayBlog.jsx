@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
-import { getPodcastByCategory, getMostPopularPodcast } from '../api/index.js';
+import { getBlogByCategory, getMostPopularBlog } from '../api/index.js';
 import styled from 'styled-components';
 import { PodcastCard } from '../components/PodcastCard.jsx';
 import { useDispatch } from "react-redux";
@@ -15,19 +15,6 @@ flex-direction: column;
 height: 100%;
 overflow-y: scroll;
 `
-const FilterContainer = styled.div`
-display: flex;
-flex-direction: column;
-${({ box, theme }) => box && `
-background-color: ${theme.bg};
-  border-radius: 10px;
-  padding: 20px 30px;
-`}
-background-color: ${({ theme }) => theme.bg};
-  border-radius: 10px;
-  padding: 20px 30px;
-`;
-
 const Topic = styled.div`
   color: ${({ theme }) => theme.text_primary};
   font-size: 24px;
@@ -69,17 +56,17 @@ color: ${({ theme }) => theme.text_primary};
 
 
 
-const DisplayPodcasts = () => {
+const DisplayBlog = () => {
     const { type } = useParams();
-    const [podcasts, setPodcasts] = useState([]);
+    const [blog, setBlog] = useState([]);
     const [string, setString] = useState("");
     const dispatch = useDispatch();
     const [Loading, setLoading] = useState(false);
 
     const mostPopular = async () => {
-        await getMostPopularPodcast()
+        await getMostPopularBlog()
             .then((res) => {
-                setPodcasts(res.data)
+                setBlog(res.data)
             })
             .catch((err) => {
                 dispatch(
@@ -91,9 +78,9 @@ const DisplayPodcasts = () => {
             });
     }
     const getCategory = async () => {
-        await getPodcastByCategory(type)
+        await getBlogByCategory(type)
             .then((res) => {
-                setPodcasts(res.data)
+                setBlog(res.data)
             })
             .catch((err) => {
                 dispatch(
@@ -106,7 +93,7 @@ const DisplayPodcasts = () => {
 
     }
 
-    const getallpodcasts = async () => {
+    const getallblog = async () => {
         if (type === 'mostpopular') {
             setLoading(true);
             let arr = type.split("");
@@ -128,12 +115,11 @@ const DisplayPodcasts = () => {
     }
 
     useEffect(() => {
-        getallpodcasts();
+        getallblog();
 
     }, [])
     return (
         <DisplayMain>
-            <FilterContainer>
             <Container>
                 <Topic>{string}</Topic>
                 {Loading ? 
@@ -142,16 +128,15 @@ const DisplayPodcasts = () => {
                 </Loader>
                  :
                     <Podcasts>
-                        {podcasts.length === 0 && <DisplayNo>No Podcasts</DisplayNo>}
-                        {podcasts.map((podcast) => (
-                            <PodcastCard podcast={podcast} />
+                        {blog.length === 0 && <DisplayNo>No Blogs</DisplayNo>}
+                        {blog.map((blogs) => (
+                            <PodcastCard blogs={blogs} />
                         ))}
                     </Podcasts>
                 }
             </Container>
-            </FilterContainer>
         </DisplayMain>
     )
 }
 
-export default DisplayPodcasts
+export default DisplayBlog

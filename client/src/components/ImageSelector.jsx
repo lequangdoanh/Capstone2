@@ -11,7 +11,7 @@ const Container = styled.div`
     justify-content: center;
     gap: 6px;
     align-items: center;
-    border: 2px dashed  ${({ theme }) => theme.text_primary + "80"}};
+    border: 1px dashed  ${({ theme }) => theme.text_primary + "80"}};
     border-radius: 12px;
     color: ${({ theme }) => theme.text_primary + "80"};
     margin: 30px 20px 0px 20px;
@@ -52,7 +52,15 @@ const ImageSelector = ({ podcast, setPodcast }) => {
     };
     return (
         <Container>
-            {podcast.thumbnail !== "" ? <Img src={podcast.thumbnail} /> : <>
+            {podcast.thumbnail !== "" ? <>
+            <ReactImageFileToBase64
+                        onCompleted={handleOnCompleted}
+                        CustomisedButton={CustomisedButton}
+                        multiple={false}
+                />
+                <Img src={podcast.thumbnail} />
+            </> : 
+            <>
                 <CloudUploadIcon sx={{ fontSize: "40px" }} />
                 <Typo>Click here to upload thumbnail</Typo>
                 <div style={{ display: "flex", gap: '6px' }}>

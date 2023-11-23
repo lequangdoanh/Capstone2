@@ -45,3 +45,21 @@ export const getUser = async (req, res, next) => {
         next(err);
     }
 }
+
+
+export const getAllUser = async (req, res, next) => {
+    try {
+        const user = await User.find({}).populate({
+            path: "podcasts",
+            populate: {
+                path: "creator",
+                select: "name img",
+            }
+        }
+        )
+        res.status(200).json(user);
+    } catch (err) {
+        console.log(req.user)
+        next(err);
+    }
+}

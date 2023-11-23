@@ -7,6 +7,13 @@ import { PodcastCard } from '../components/PodcastCard.jsx'
 import { getUsers } from '../api/index';
 import { Link } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
+import { getListAllBlogs } from '../api/index';
+import { getAllBlogs } from '../api/index';
+import Blogs from './Blogs';
+import Widget from "../components/widget/Widget";
+import Featured from "../components/featured/Featured"
+import Chart from "../components/chart/Chart";
+import Table from "../components/table/Table";
 
 const DashboardMain = styled.div`
 padding: 20px 30px;
@@ -86,10 +93,8 @@ color: ${({ theme }) => theme.text_primary};
 const Dashboard = ({ setSignInOpen }) => {
   const [mostPopular, setMostPopular] = useState([]);
   const [user, setUser] = useState();
-  const [comedy, setComedy] = useState([]);
-  const [news, setNews] = useState([]);
-  const [sports, setsports] = useState([]);
-  const [crime, setCrime] = useState([]);
+  const [science, setScience] = useState([]);
+  const [culture, setCulture] = useState([]);
   const [loading, setLoading] = useState(false);
 
   //user
@@ -115,41 +120,25 @@ const Dashboard = ({ setSignInOpen }) => {
       });
   }
 
-  const getCommedyPodcasts = async () => {
-    getPodcastByCategory("comedy")
+
+  const getSciencePodcasts = async () => {
+    getPodcastByCategory("science")
       .then((res) => {
-        setComedy(res.data)
+        setScience(res.data)
         console.log(res.data)
       })
       .catch((error) => console.log(error));
   }
 
-  const getNewsPodcasts = async () => {
-    getPodcastByCategory("news")
+  const getCulturePodcasts = async () => {
+    getPodcastByCategory("culture")
       .then((res) => {
-        setNews(res.data)
+        setCulture(res.data)
         console.log(res.data)
       })
       .catch((error) => console.log(error));
   }
 
-  const getSportsPodcasts = async () => {
-    getPodcastByCategory("sports")
-      .then((res) => {
-        setsports(res.data)
-        console.log(res.data)
-      })
-      .catch((error) => console.log(error));
-  }
-
-  const getCrimePodcasts = async () => {
-    getPodcastByCategory("crime")
-      .then((res) => {
-        setCrime(res.data)
-        console.log(res.data)
-      })
-      .catch((error) => console.log(error));
-  }
 
   const getallData = async () => {
     setLoading(true);
@@ -158,11 +147,9 @@ const Dashboard = ({ setSignInOpen }) => {
       await getUser();
     }
     await getPopularPodcast();
-    await getCommedyPodcasts();
-    await getNewsPodcasts();
-    await getCommedyPodcasts();
-    await getCrimePodcasts();
-    await getSportsPodcasts();
+    await getSciencePodcasts();
+    await getCulturePodcasts();
+    
     setLoading(false);
   }
 
@@ -178,22 +165,37 @@ const Dashboard = ({ setSignInOpen }) => {
         </Loader>
         :
         <>
-          {currentUser && user?.podcasts?.length > 0 &&
-            <FilterContainer box={true}>
-              <Topic>Your Uploads
-                <Link to={`/profile`} style={{ textDecoration: "none" }}>
-                  <Span>Show All</Span>
-                </Link>
-              </Topic>
-              <Podcasts>
-                {user?.podcasts.slice(0, 10).map((podcast) => (
-                  <PodcastCard podcast={podcast} user={user} setSignInOpen={setSignInOpen} />
-                ))}
-              </Podcasts>
-            </FilterContainer>
+
+          {currentUser?.isAdmin && (
+            
+            <div className="home">
+             
+              <div className="homeContainer">
+              
+                <div className="widgets">
+                  <Widget type="user" />
+                  <Widget type="order" />
+                  <Widget type="earning" />
+                  <Widget type="balance" />
+                </div>
+                <div className="charts">
+                  <Featured />
+                  <Chart title="Last 6 Months (Revenue)" aspect={2 / 1} />
+                </div>
+                <div className="listContainer">
+                  <div className="listTitle">Latest Transactions</div>
+                  <Table />
+                </div>
+              </div>
+            </div>
+          )
+
           }
           <FilterContainer>
-            <Topic>Most Popular
+            {!currentUser?.isAdmin && (
+              <>
+                <FilterContainer>
+            <Topic>Popular & trending
               <Link to={`/showpodcasts/mostpopular`} style={{ textDecoration: "none" }}>
                 <Span>Show All</Span>
               </Link>
@@ -204,53 +206,40 @@ const Dashboard = ({ setSignInOpen }) => {
               ))}
             </Podcasts>
           </FilterContainer>
+
+
+          
           <FilterContainer>
-            <Topic>Comedy
-              <Link to={`/showpodcasts/comedy`} style={{ textDecoration: "none" }}>
+            <Topic>Top podcasts in Science
+              <Link to={`/showpodcasts/science`} style={{ textDecoration: "none" }}>
                 <Span>Show All</Span>
               </Link>
             </Topic>
             <Podcasts>
-              {comedy.slice(0, 10).map((podcast) => (
+              {science.slice(0, 6).map((podcast) => (
                 <PodcastCard podcast={podcast} user={user} setSignInOpen={setSignInOpen} />
               ))}
             </Podcasts>
           </FilterContainer>
+          
           <FilterContainer>
-            <Link to={`/showpodcasts/news`} style={{ textDecoration: "none" }}>
-              <Topic>News
+            <Link to={`/showpodcasts/culture`} style={{ textDecoration: "none" }}>
+              <Topic>Top podcasts in Culture
                 <Span>Show All</Span>
               </Topic>
             </Link>
             <Podcasts>
-              {news.slice(0, 10).map((podcast) => (
+              {culture.slice(0, 10).map((podcast) => (
                 <PodcastCard podcast={podcast} user={user} setSignInOpen={setSignInOpen} />
               ))}
             </Podcasts>
           </FilterContainer>
-          <FilterContainer>
-            <Link to={`/showpodcasts/crime`} style={{ textDecoration: "none" }}>
-              <Topic>Crime
-                <Span>Show All</Span>
-              </Topic>
-            </Link>
-            <Podcasts>
-              {crime.slice(0, 10).map((podcast) => (
-                <PodcastCard podcast={podcast} user={user} setSignInOpen={setSignInOpen} />
-              ))}
-            </Podcasts>
-          </FilterContainer>
-          <FilterContainer>
-            <Link to={`/showpodcasts/sports`} style={{ textDecoration: "none" }}>
-              <Topic>Sports
-                <Span>Show All</Span>
-              </Topic>
-            </Link>
-            <Podcasts>
-              {sports.slice(0, 10).map((podcast) => (
-                <PodcastCard podcast={podcast} user={user} setSignInOpen={setSignInOpen} />
-              ))}
-            </Podcasts>
+          
+          
+              </>
+            )
+            }
+          
           </FilterContainer>
         </>
       }
