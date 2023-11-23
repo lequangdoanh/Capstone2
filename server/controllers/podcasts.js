@@ -196,4 +196,17 @@ export const search = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
+};
+  
+
+export const deletePostCard = async (req, res, next) => {
+    const query = req.params.id;
+
+    console.log(query);
+    try {
+        const podcast = await Podcasts.deleteOne({ _id: query });
+      res.status(200).json(podcast);
+    } catch (err) {
+      next(err);
+    }
   };
