@@ -6,16 +6,24 @@ import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCd2X9WXZiBIAAI8TzrR7MUa3-EvZp2V0c",
+//   authDomain: "test-app-rishav.firebaseapp.com",
+//   projectId: "test-app-rishav",
+//   storageBucket: "test-app-rishav.appspot.com",
+//   messagingSenderId: "129567474175",
+//   appId: "1:129567474175:web:8473430c58c34cac8f27ca",
+//   measurementId: "G-B8JJ57Y5T6"
+// };
 const firebaseConfig = {
-  apiKey: "AIzaSyCd2X9WXZiBIAAI8TzrR7MUa3-EvZp2V0c",
-  authDomain: "test-app-rishav.firebaseapp.com",
-  projectId: "test-app-rishav",
-  storageBucket: "test-app-rishav.appspot.com",
-  messagingSenderId: "129567474175",
-  appId: "1:129567474175:web:8473430c58c34cac8f27ca",
-  measurementId: "G-B8JJ57Y5T6"
+  apiKey: "AIzaSyCW6lCFoh4ZVFqDPerFqTP4EW_HFOaUAGw",
+  authDomain: "podcase-5f04a.firebaseapp.com",
+  projectId: "podcase-5f04a",
+  storageBucket: "podcase-5f04a.appspot.com",
+  messagingSenderId: "791991485951",
+  appId: "1:791991485951:web:8d9ef2bec8f3b4bf3653ca",
+  measurementId: "G-QTM1551FK9"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export default app;
