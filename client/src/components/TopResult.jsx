@@ -2,6 +2,9 @@ import * as React from 'react';
 import styled from "styled-components";
 import {format} from 'timeago.js';
 import {Link} from 'react-router-dom';
+import {AiFillEye } from "react-icons/ai";
+import {AiFillClockCircle } from "react-icons/ai";
+import {BiSolidUserCircle } from "react-icons/bi";
 
 const SearchedCard = styled(Link)`
 width: 500px;
@@ -27,7 +30,8 @@ text-decoration: none;
 `
 const PodcastImage = styled.img`
 object-fit:cover;
-  width: 50%;
+  width: 100%;
+  height: 400px;
   border-radius: 6px;
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.3);
 `
@@ -81,12 +85,15 @@ const TopResult = ({podcast}) => {
       <PodcastTitle>{podcast?.name}</PodcastTitle>
       <UploadInfo>
         <Time>
-        • {podcast.views} Views
+        <AiFillEye className='icons'/>{podcast.views} Views
         </Time>
         <Time>
-        • {format(podcast?.createdAt)}
+        <AiFillClockCircle className='icons'/> {format(podcast?.createdAt)}
         </Time>
-        <CreatorName style={{marginLeft: '18px'}}>{podcast?.creator.name}</CreatorName>
+        <Time> 
+        <BiSolidUserCircle className='icons'/> {podcast?.creator?.name}
+        </Time>
+        
       </UploadInfo>
       <Description>{podcast?.desc}</Description>
     </SearchedCard>
