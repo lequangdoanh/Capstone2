@@ -141,7 +141,7 @@ const Profile = () => {
         <ProfileMain>
             <UserDetails>
                 <ProfileAvatar>
-                    <Avatar sx={{ height: 165, width: 165 , fontSize: '24px'}} src={user?.img}>{user?.name.charAt(0).toUpperCase()}</Avatar>
+                    <Avatar sx={{ height: 120, width: 120 , fontSize: '24px'}} src={user?.img}>{user?.name.charAt(0).toUpperCase()}</Avatar>
                 </ProfileAvatar>
 
                 <ProfileContainer>
