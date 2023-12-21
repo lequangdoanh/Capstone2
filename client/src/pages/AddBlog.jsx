@@ -1,12 +1,15 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
 import styled from "styled-components";
-import ImageSelector from "../components/ImageSelector";
-import React from "react";
+// import ImageSelector from "../components/ImageSelector";
 import { useEffect } from "react";
 import { addBlog } from "../api";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { openSnackbar } from "../redux/snackbarSlice"; 
 import { CategoryBlog } from '../utils/Data';
+
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -179,18 +182,61 @@ const AddBlog = () => {
     })
         
     }
-    
+    const [file, setFile] = useState(null);
+    const [captions, setCaptions] = useState([]);
+    const [error, setError] = useState(null);
+    const [imageBlog, setImageBlog] = useState(null);
+  
+    const handleFileChange = async (event) => {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+  
+      const reader = new FileReader();
+      reader.onload = (readerEvent) => {
+        setImageBlog(readerEvent.target.result);
+      };
+      reader.readAsDataURL(selectedFile);
+  
+      await uploadFile(selectedFile);
+    };
+  
+
+    const uploadFile = async (selectedFile) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+  
+        const response = await axios.post('http://localhost:5000/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        setCaptions(response.data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
   return (
     <Container>
       <Wrapper>
         <Title>Upload Blog</Title>
-        <ImageSelector podcast={blog} setPodcast={setBlog} />
+        {/* <ImageSelector podcast={blog} setPodcast={setBlog} type="file" onChange={handleFileChange}  /> */}
+        <input type="file" onChange={handleFileChange} />
+
+      {imageBlog && (
+        <div>
+          <h2>Image Preview:</h2>
+          <img src={imageBlog} podcast={blog} setPodcast={setBlog} alt="Selected" style={{ width: '140px', height: '140px' }} />
+        </div>
+      )}
+
         <OutlinedBox style={{ marginTop: "12px" }}>
           <TextInput
             placeholder="Podcast Name*"
             type="text"
             name="name"
-            value={blog?.name}
+            value={captions}
             onChange={(e) => setBlog({ ...blog, name: e.target.value })}
           />
         </OutlinedBox>
