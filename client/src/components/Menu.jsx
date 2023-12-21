@@ -25,7 +25,7 @@ import { Avatar } from '@mui/material';
 import { MdVideoLibrary } from "react-icons/md"
 
 const MenuContainer = styled.div`
-  flex: 0.5;
+  flex: 0.6;
   flex-direction: column;
   height: 100vh;
   display: flex;
@@ -54,7 +54,8 @@ const Elements = styled.div`
   color: ${({ theme }) => theme.text_secondary};
   width: 100%;
   &:hover {
-    background-color: ${({ theme }) => theme.text_secondary + 50};
+    background-color: ${({ theme }) => theme.text_secondary + 80};
+    color: purple;
   }
 `;
 const NavText = styled.div`
@@ -68,11 +69,22 @@ const HR = styled.div`
   margin: 10px 0px;
 `;
 const Flex = styled.div`
+  margin: 3px;
   justify-content: space-between;
   display: flex;
   align-items: center;
-  padding: 0px 16px;
+  padding: 5.8px 16px;
   width: 86%;
+  border-bottom: 1px solid rgb(238, 237, 237);
+`;
+const FlexSide= styled.div`
+  margin-top: 6px;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  width: 86%;
+  border-bottom: 1px solid rgb(238, 237, 237);
 `;
 const Close = styled.div`
   display: none;
@@ -83,9 +95,10 @@ const Close = styled.div`
 const Logo = styled.div`
   color: ${({ theme }) => theme.primary};
   display: flex;
+  margin: 15px 2px;
   align-items: center;
   justify-content: center;
-  color: #D3959B;  /* fallback for old browsers */
+  color: gray;  /* fallback for old browsers */
 color: -webkit-linear-gradient(to right, #BFE6BA, #D3959B);  /* Chrome 10-25, Safari 5.1-6 */
 color: linear-gradient(to right, #BFE6BA, #D3959B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
@@ -95,7 +108,7 @@ color: linear-gradient(to right, #BFE6BA, #D3959B); /* W3C, IE 10+/ Edge, Firefo
   margin: 10px 0px;
 `;
 const Image = styled.img`
-  height: 40px;
+  height: 25px;
 `;
 const Welcome = styled.div`
   padding: 4px 2.5rem;
@@ -128,7 +141,7 @@ font-weight: 600;
 `;
 
 
-const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpen }) => {
+const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -147,13 +160,12 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
         <>
         <Flex>
         <Link to="/admin-dashboard" style={{ textDecoration: "none", color: "inherit" }}>
-          <Logo>
-          {/* <MdAdminPanelSettings/> */}
-            {/* <Image src={LogoIcon} /> */}
-            ADMIN PODSTREAM
+        <Logo>
+            <Image src={LogoIcon} />
+            Admin Podstream
           </Logo>
-          
         </Link>
+        
         
         <Close>
           <CloseRounded
@@ -162,14 +174,15 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
           />
         </Close>
       </Flex>
+      {/* <hr style={{ "width": "100%", "color": "rgb(255, 255, 255)"}}/> */}
     
-      <PictureLogo>
+      {/* <PictureLogo>
       <Link to='/profile' style={{ textDecoration: 'none' }}>
            <Avatar src={currentUser?.img} >{currentUser?.name.charAt(0).toUpperCase()}</Avatar>
           </Link>
           </PictureLogo>
-          <Welcome>{currentUser?.name}</Welcome>
-<br />
+          <Welcome>{currentUser?.name}</Welcome> */}
+
           <Link
             to="/admin-dashboard"
             style={{ textDecoration: "none", color: "inherit", width: "100%" }}
@@ -185,16 +198,7 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
           >
             <Elements>
               <AdminIcon className="icons"/>
-              <NavText>User Mana</NavText>
-            </Elements>
-          </Link>
-          <Link
-            to="/admin-blog"
-            style={{ textDecoration: "none", color: "inherit", width: "100%" }}
-          >
-            <Elements>
-              <BiLogoBlogger className="icons" />
-              <NavText>Blog Mana</NavText>
+              <NavText>Users</NavText>
             </Elements>
           </Link>
 
@@ -204,28 +208,30 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
           >
             <Elements>
               <SiApplepodcasts className="icons" />
-              <NavText>PodCast Mana</NavText>
+              <NavText>Podcasts</NavText>
             </Elements>
           </Link>
-
+          
           <Link
-            to="/analyst"
+            to="/admin-blog"
             style={{ textDecoration: "none", color: "inherit", width: "100%" }}
           >
             <Elements>
-              <SiApplepodcasts className="icons" />
-              <NavText>Statics</NavText>
+              <BiLogoBlogger className="icons" />
+              <NavText>Blogs</NavText>
             </Elements>
           </Link>
+
+          
         </>
       )}
       {!currentUser?.isAdmin && (
         <>
-        <Flex>
+        <FlexSide>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-          <Logo>
+          <Logo tyle={{ "padding-top":"30px",color: "inherit" }}>
             <Image src={LogoIcon} />
-            PODSTREAM
+            PODSTREAM DAILY
           </Logo>
         </Link>
         <Close>
@@ -234,7 +240,7 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
             style={{ cursor: "pointer" }}
           />
         </Close>
-      </Flex>
+      </FlexSide>
           <Link
             to="/"
             style={{ textDecoration: "none", color: "inherit", width: "100%" }}
@@ -259,19 +265,11 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
           >
             <Elements>
               <BiLogoBlogger className="icons"/>
-              <NavText>Blog Daily</NavText>
+              <NavText>Blogs</NavText>
             </Elements>
           </Link>
           
-          <Link
-            to="/chats"
-            style={{ textDecoration: "none", color: "inherit", width: "100%" }}
-          >
-            <Elements>
-              <BiSupport className="icons"/>
-              <NavText>Chat</NavText>
-            </Elements>
-          </Link>
+          
         </>
       )}
       {currentUser ? (
@@ -295,25 +293,6 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
           </Elements> */}
         </Link>
       )}
-
-<Link
-        onClick={() => {
-          if (currentUser) {
-            setChatbotOpen(true);
-          } else {
-            dispatch(openSignin());
-          }
-        }}
-        style={{ textDecoration: "none", color: "inherit", width: "100%" }}
-      >
-        <Elements>
-          <FaCloudUploadAlt className="icons"/>
-          <NavText>Chatbot</NavText>
-        </Elements>
-      </Link>
-          
-      
-
       <Link
         onClick={() => {
           if (currentUser) {
@@ -326,7 +305,7 @@ const Menu = ({ setMenuOpen, darkMode, setDarkMode, setUploadOpen, setChatbotOpe
       >
         <Elements>
           <FaCloudUploadAlt className="icons"/>
-          <NavText>Upload</NavText>
+          <NavText>Add New Post</NavText>
         </Elements>
       </Link>
 
